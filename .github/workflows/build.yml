@@ -7,12 +7,12 @@ on:
         description: .crx version (i.e. 5.3.3, defaults to latest)
         type: string
         required: false
-      curl-args:
-        description: Extra arguments for curl
-        required: false
       xpi-version:
         description: .xpi version (i.e. 5.3.3, defaults to latest)
         type: string
+        required: false
+      curl-args:
+        description: Extra arguments for curl
         required: false
 
 jobs:
