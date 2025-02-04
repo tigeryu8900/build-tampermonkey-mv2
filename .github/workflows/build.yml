@@ -1,0 +1,40 @@
+name: Build extension
+
+on:
+  workflow_dispatch:
+    inputs:
+      crx-version:
+        description: .crx version (i.e. 5.3.3, defaults to latest)
+        type: string
+        required: false
+      xpi-version:
+        description: .xpi version (i.e. 5.3.3, defaults to latest)
+        type: string
+        required: false
+
+jobs:
+  chromium:
+    name: Build .zip for Chromium
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download crx
+        uses: ./.github/actions/download-crx
+        with:
+          version: ${{ inputs.crx-version }}
+          output: tampermonkey.crx
+      - name: Download xpi
+        uses: ./.github/actions/download-xpi
+        with:
+          version: ${{ inputs.xpi-version }}
+          output: tampermonkey.xpi
+      - name: Patch extension
+        run: |
+          unzip tampermonkey.xpi manifest.json
+          mkdir webextension
+          unzip tampermonkey.crx -d webextension
+          jq '.background.persistent = true' manifest.json > webextension/manifest.json
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tampermonkey-chromium.zip
+          path: webextension/*

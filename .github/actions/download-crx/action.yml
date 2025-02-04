@@ -1,0 +1,37 @@
+name: Download .crx file
+
+inputs:
+  version:
+    description: Extension version (i.e. 5.3.3, defaults to latest)
+    required: false
+  output:
+    description: Output path
+    required: true
+    default: tampermonkey.crx
+
+runs:
+  using: composite
+  steps:
+    - name: Get version
+      id: version
+      env:
+        VERSION: ${{ inputs.version }}
+      shell: bash
+      run: |
+        if [ -z "$VERSION" ]; then
+          VERSION="$(
+            curl 'https://www.crx4chrome.com/crx/755/' \
+            | grep -oP '(?<=<script type="application\/ld\+json">)(?:(?!<\/script>).)*(?=<\/script>)' \
+            | jq -r '.softwareVersion'
+          )"
+        fi
+        echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+    - name: Download file
+      env:
+        VERSION: ${{ steps.version.outputs.version }}
+        OUTPUT: ${{ inputs.output }}
+      shell: bash
+      run: |
+        curl "https://f6.crx4chrome.com/crx.php?i=dhdgffkkebhmkfjojejmpbldmpobfkfo&v=$VERSION" \
+        -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:134.0) Gecko/20100101 Firefox/134.0' \
+        --output "$OUTPUT"
