@@ -26,6 +26,7 @@ runs:
           )"
         fi
         echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
     - name: Download file
       env:
         VERSION: ${{ steps.version.outputs.version }}

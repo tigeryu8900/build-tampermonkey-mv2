@@ -30,6 +30,7 @@ runs:
           )"
         fi
         echo "url=$URL" >> "$GITHUB_OUTPUT"
+
     - name: Download file
       env:
         URL: ${{ steps.get-file-url.outputs.url }}
