@@ -4,6 +4,9 @@ inputs:
   version:
     description: Extension version (i.e. 5.3.3, defaults to latest)
     required: false
+  curl-args:
+    description: Extra arguments for curl
+    required: false
   output:
     description: Output path
     required: true
@@ -20,12 +23,16 @@ runs:
       run: |
         if [ -z "$VERSION" ]; then
           URL="$(
-            curl 'https://addons.mozilla.org/api/v5/addons/addon/tampermonkey/versions/' --compressed \
+            curl 'https://addons.mozilla.org/api/v5/addons/addon/tampermonkey/versions/' \
+              --compressed \
+              ${{ inputs.curl-args }} \
               | jq -r '.results.[0].file.url'
           )"
         else
           URL="$(
-            curl 'https://addons.mozilla.org/api/v5/addons/addon/tampermonkey/versions/' --compressed \
+            curl 'https://addons.mozilla.org/api/v5/addons/addon/tampermonkey/versions/' \
+              --compressed \
+              ${{ inputs.curl-args }} \
               | jq -r ".results.[] | select(.version == \"$VERSION\").file.url"
           )"
         fi
@@ -37,4 +44,4 @@ runs:
         OUTPUT: ${{ inputs.output }}
       shell: bash
       run: |
-        wget "$URL" -O "$OUTPUT"
+        curl "$URL" --output "$OUTPUT"
