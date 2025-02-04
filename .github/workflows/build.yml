@@ -43,7 +43,7 @@ jobs:
         run: |
           unzip tampermonkey.xpi manifest.json
           mkdir webextension
-          unzip tampermonkey.crx -d webextension
+          unzip tampermonkey.crx -d webextension || true
           jq '.background.persistent = true' manifest.json > webextension/manifest.json
 
       - name: Upload artifact
