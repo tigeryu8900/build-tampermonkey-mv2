@@ -21,8 +21,9 @@ runs:
         if [ -z "$VERSION" ]; then
           VERSION="$(
             curl 'https://www.crx4chrome.com/crx/755/' \
-            | grep -oP '(?<=<script type="application\/ld\+json">)(?:(?!<\/script>).)*(?=<\/script>)' \
-            | jq -r '.softwareVersion'
+              -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:134.0) Gecko/20100101 Firefox/134.0' \
+              | grep -oP '(?<=<script type="application\/ld\+json">)(?:(?!<\/script>).)*(?=<\/script>)' \
+              | jq -r '.softwareVersion'
           )"
         fi
         echo "version=$VERSION" >> "$GITHUB_OUTPUT"
@@ -34,5 +35,5 @@ runs:
       shell: bash
       run: |
         curl "https://f6.crx4chrome.com/crx.php?i=dhdgffkkebhmkfjojejmpbldmpobfkfo&v=$VERSION" \
-        -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:134.0) Gecko/20100101 Firefox/134.0' \
-        --output "$OUTPUT"
+          -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:134.0) Gecko/20100101 Firefox/134.0' \
+          --output "$OUTPUT"

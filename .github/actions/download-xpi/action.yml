@@ -21,12 +21,12 @@ runs:
         if [ -z "$VERSION" ]; then
           URL="$(
             curl 'https://addons.mozilla.org/api/v5/addons/addon/tampermonkey/versions/' --compressed \
-            | jq -r '.results.[0].file.url'
+              | jq -r '.results.[0].file.url'
           )"
         else
           URL="$(
             curl 'https://addons.mozilla.org/api/v5/addons/addon/tampermonkey/versions/' --compressed \
-            | jq -r ".results.[] | select(.version == \"$VERSION\").file.url"
+              | jq -r ".results.[] | select(.version == \"$VERSION\").file.url"
           )"
         fi
         echo "url=$URL" >> "$GITHUB_OUTPUT"
